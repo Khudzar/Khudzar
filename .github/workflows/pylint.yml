@@ -31,15 +31,15 @@ jobs:
               aws glue update-job --cli-input-json file://job-option.json
             done
 
-  update_workflow:
-    name: Update ll_datapipeline workflow
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-      - uses: actions/checkout@v2
+  #update_workflow:
+   # name: Update ll_datapipeline workflow
+    #runs-on: ubuntu-latest
+    #steps:
+     # - name: Checkout repository
+     # - uses: actions/checkout@v2
       
-      - name: Update ll_datapipeline workflow
-      - run: |
-            cd "datapipeline/workflow"
-            chmod +x ./ll_update_pipeline.sh
-            ./ll_update_pipeline.sh
+     # - name: Update ll_datapipeline workflow
+     # - run: |
+     #       cd "datapipeline/workflow"
+     #       chmod +x ./ll_update_pipeline.sh
+     #       ./ll_update_pipeline.sh
