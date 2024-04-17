@@ -3,7 +3,7 @@ name: Update Glue Jobs and Workflows
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   update_jobs:
