@@ -10,10 +10,11 @@ jobs:
     name: Update Glue Jobs
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+      - uses: actions/checkout@v2
+
       - name: Update Glue Jobs
-        uses: actions/checkout@v4
-        with:
-          script: |
+      - run: |
             cd "datapipeline/jobs"
             aws s3 cp log4j.properties "$EXTRA_FILE_S3_PATH/log4j.properties"
             JOBS="datapipeline/jobs/bronze/delta_lake_bronze_ignite,ll_delta_lake_bronze_ignite.py
@@ -34,10 +35,11 @@ jobs:
     name: Update ll_datapipeline workflow
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+      - uses: actions/checkout@v2
+      
       - name: Update ll_datapipeline workflow
-        uses: actions/checkout@v4
-        with:
-          script: |
+      - run: |
             cd "datapipeline/workflow"
             chmod +x ./ll_update_pipeline.sh
             ./ll_update_pipeline.sh
