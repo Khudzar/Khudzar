@@ -10,11 +10,8 @@ jobs:
     name: Update Glue Jobs
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-      
       - name: Update Glue Jobs
-        uses: atlassian/generic-script-runner-action@v3
+        uses: actions/checkout@v4
         with:
           script: |
             cd "datapipeline/jobs"
@@ -37,11 +34,8 @@ jobs:
     name: Update ll_datapipeline workflow
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-      
       - name: Update ll_datapipeline workflow
-        uses: atlassian/generic-script-runner-action@v3
+        uses: actions/checkout@v4
         with:
           script: |
             cd "datapipeline/workflow"
