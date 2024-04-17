@@ -1,13 +1,49 @@
-name: learn-github-actions
-run-name: ${{ github.actor }} is learning GitHub Actions
-on: [push]
+name: Update Glue Jobs and Workflows
+
+on:
+  push:
+    branches:
+      - main
+
 jobs:
-  check-bats-version:
+  update_jobs:
+    name: Update Glue Jobs
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      
+      - name: Update Glue Jobs
+        uses: atlassian/generic-script-runner-action@v3
         with:
-          node-version: '20'
-      - run: npm install -g bats
-      - run: bats -v
+          script: |
+            cd "datapipeline/jobs"
+            aws s3 cp log4j.properties "$EXTRA_FILE_S3_PATH/log4j.properties"
+            JOBS="datapipeline/jobs/bronze/delta_lake_bronze_ignite,ll_delta_lake_bronze_ignite.py
+                  datapipeline/jobs/bronze/delta_lake_bronze_infutor,ll_delta_lake_bronze_infutor.py
+                  datapipeline/jobs/silver/delta_lake_silver_ignite,ll_delta_lake_silver_ignite.py
+                  datapipeline/jobs/silver/delta_lake_silver_infutor,ll_delta_lake_silver_infutor.py
+                  datapipeline/jobs/silver/delta_lake_silver_infutor_ignite,ll_delta_lake_silver_infutor_ignite.py
+                  datapipeline/jobs/gold/delta_lake_gold_infutor_ignite,ll_delta_lake_gold_infutor_ignite.py";
+
+            for i in ${JOBS}; do
+              IFS=',' read -r JOB_DIR JOB_NAME <<< "$i"
+              cd "$GITHUB_WORKSPACE/$JOB_DIR"
+              aws s3 cp main.py "$JOBS_S3_PATH/$JOB_NAME"
+              aws glue update-job --cli-input-json file://job-option.json
+            done
+
+  update_workflow:
+    name: Update ll_datapipeline workflow
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      
+      - name: Update ll_datapipeline workflow
+        uses: atlassian/generic-script-runner-action@v3
+        with:
+          script: |
+            cd "datapipeline/workflow"
+            chmod +x ./ll_update_pipeline.sh
+            ./ll_update_pipeline.sh
